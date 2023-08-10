@@ -71,3 +71,9 @@ export function updateProduct(id, sellerId, product) {
         = ($1, $2, $3, $4, $5, NOW()) WHERE id=$6 AND "sellerId"=$7`,
         [name, description, currentPrice, category, photoUrl, id, sellerId]);
 }
+
+export function updateProductAvailability(id, sellerId) {
+
+    return db.query(`UPDATE product SET "isAvailable" = NOT "isAvailable" WHERE id=$1 AND "sellerId"=$2`,
+        [id, sellerId]);
+}

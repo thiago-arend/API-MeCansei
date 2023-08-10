@@ -1,4 +1,4 @@
-import { deleteProduct, insertProduct, selectProduct, selectProducts, selectProductsBySellerId, updateProduct } from "../repositories/product.repository.js";
+import { deleteProduct, insertProduct, selectProduct, selectProducts, selectProductsBySellerId, updateProduct, updateProductAvailability } from "../repositories/product.repository.js";
 
 export async function createProduct(req, res) {
     const { userId } = res.locals.session;
@@ -87,6 +87,24 @@ export async function setProduct(req, res) {
     } catch (err) {
 
         if (Number(err.code) === 23505) return res.status(409).send({ message: "Já existe um filme com esse nome!" });
+
+        res.status(500).send(err.message);
+    }
+}
+
+export async function toggleProductAvailability(req, res) {
+    const { id } = req.params;
+    const { userId } = res.locals.session;
+
+    try {
+        const select = await selectProduct(id);
+        if (select.rowCount === 0) return res.status(404).send({ message: "A disponibilidade não pôde ser alterada porque o produto não existe!" });
+
+        const result = await updateProductAvailability(id, userId);
+        if (result.rowCount === 0) return res.status(401).send({ message: "Você não possui permissão para atualizar a disponibilidade desse produto!" });
+
+        res.sendStatus(204);
+    } catch (err) {
 
         res.status(500).send(err.message);
     }
