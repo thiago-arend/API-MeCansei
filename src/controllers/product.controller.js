@@ -1,4 +1,4 @@
-import { insertProduct, selectProduct, selectProducts, selectProductsBySellerId } from "../repositories/product.repository.js";
+import { deleteProduct, insertProduct, selectProduct, selectProducts, selectProductsBySellerId } from "../repositories/product.repository.js";
 
 export async function createProduct(req, res) {
     const { userId } = res.locals.session;
@@ -48,6 +48,24 @@ export async function getMyProducts(req, res) {
         const result = await selectProductsBySellerId(userId);
 
         res.status(200).send(result.rows);
+    } catch (err) {
+
+        res.status(500).send(err.message);
+    }
+}
+
+export async function removeProduct(req, res) {
+    const { id } = req.params;
+    const { userId } = res.locals.session;
+
+    try {
+        const select = await selectProduct(id);
+        if (select.rowCount === 0) return res.status(404).send({ message: "O produto não pôde ser removido porque não existe!" });
+
+        const result = await deleteProduct(id, userId);
+        if (result.rowCount === 0) return res.status(401).send({ message: "Você não possui permissão para apagar esse produto!" });
+
+        res.sendStatus(204);
     } catch (err) {
 
         res.status(500).send(err.message);

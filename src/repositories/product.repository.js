@@ -58,3 +58,7 @@ export function selectProductsBySellerId(sellerId) {
     return db.query(`SELECT id, name, description, "currentPrice", category, "photoUrl", "isAvailable" FROM product WHERE "sellerId"=$1`, 
         [sellerId]);
 }
+
+export function deleteProduct(id, sellerId) {
+    return db.query(`DELETE FROM product WHERE id=$1 AND "sellerId"=$2`, [id, sellerId]);
+}
