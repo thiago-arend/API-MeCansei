@@ -53,3 +53,8 @@ export function selectProduct(id) {
         FROM product p JOIN "user" u ON u.id=p."sellerId"
         WHERE p.id=$1;`, [id]);
 }
+
+export function selectProductsBySellerId(sellerId) {
+    return db.query(`SELECT id, name, description, "currentPrice", category, "photoUrl", "isAvailable" FROM product WHERE "sellerId"=$1`, 
+        [sellerId]);
+}
