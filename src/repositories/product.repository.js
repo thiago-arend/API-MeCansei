@@ -7,7 +7,7 @@ export function insertProduct(product) {
         [name, description, currentPrice, category, photoUrl, sellerId]);
 }
 
-export function selectProducts(query) {
+export function selectProducts(query/*, offset*/) {
     const { category, description, name, minPrice, maxPrice, orderMaxPrice, orderMinPrice } = query;
 
     let queryBase = `SELECT id, name, description, "currentPrice", category, "photoUrl" FROM product WHERE 1=1 `
@@ -42,7 +42,8 @@ export function selectProducts(query) {
         queryComplement += ` ORDER BY "currentPrice"`;
     }
 
-    queryComplement += `;`;
+    /*values.push(offset);
+    queryComplement += `OFFSET $${values.length} LIMIT 10;`;*/
 
     return db.query(queryBase + queryComplement, values);
 }
@@ -55,10 +56,18 @@ export function selectProduct(id) {
 }
 
 export function selectProductsBySellerId(sellerId) {
-    return db.query(`SELECT id, name, description, "currentPrice", category, "photoUrl", "isAvailable" FROM product WHERE "sellerId"=$1`, 
+    return db.query(`SELECT id, name, description, "currentPrice", category, "photoUrl", "isAvailable" FROM product WHERE "sellerId"=$1`,
         [sellerId]);
 }
 
 export function deleteProduct(id, sellerId) {
     return db.query(`DELETE FROM product WHERE id=$1 AND "sellerId"=$2`, [id, sellerId]);
+}
+
+export function updateProduct(id, sellerId, product) {
+    const { name, description, currentPrice, category, photoUrl } = product;
+
+    return db.query(`UPDATE product SET (name, description, "currentPrice", category, "photoUrl", "createdAt")
+        = ($1, $2, $3, $4, $5, NOW()) WHERE id=$6 AND "sellerId"=$7`,
+        [name, description, currentPrice, category, photoUrl, id, sellerId]);
 }

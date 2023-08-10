@@ -1,4 +1,4 @@
-import { deleteProduct, insertProduct, selectProduct, selectProducts, selectProductsBySellerId } from "../repositories/product.repository.js";
+import { deleteProduct, insertProduct, selectProduct, selectProducts, selectProductsBySellerId, updateProduct } from "../repositories/product.repository.js";
 
 export async function createProduct(req, res) {
     const { userId } = res.locals.session;
@@ -16,9 +16,9 @@ export async function createProduct(req, res) {
 }
 
 export async function getProducts(req, res) {
-
+    // pagina 1: (p - 1)x10 // pagina n + 1: (p - 1)x10 - 1
     try {
-        const result = await selectProducts(req.query);
+        const result = await selectProducts(req.query/*, 0*/);
 
         res.status(200).send(result.rows);
     } catch (err) {
@@ -67,6 +67,26 @@ export async function removeProduct(req, res) {
 
         res.sendStatus(204);
     } catch (err) {
+
+        res.status(500).send(err.message);
+    }
+}
+
+export async function setProduct(req, res) {
+    const { id } = req.params;
+    const { userId } = res.locals.session;
+
+    try {
+        const select = await selectProduct(id);
+        if (select.rowCount === 0) return res.status(404).send({ message: "O produto não pôde ser atualizado porque não existe!" });
+
+        const result = await updateProduct(id, userId, req.body);
+        if (result.rowCount === 0) return res.status(401).send({ message: "Você não possui permissão para atualizar esse produto!" });
+
+        res.sendStatus(204);
+    } catch (err) {
+
+        if (Number(err.code) === 23505) return res.status(409).send({ message: "Já existe um filme com esse nome!" });
 
         res.status(500).send(err.message);
     }
