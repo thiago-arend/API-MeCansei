@@ -1,4 +1,4 @@
-import { insertProduct, selectProducts } from "../repositories/product.repository.js";
+import { insertProduct, selectProduct, selectProducts } from "../repositories/product.repository.js";
 
 export async function createProduct(req, res) {
     const { userId } = res.locals.session;
@@ -21,6 +21,20 @@ export async function getProducts(req, res) {
         const result = await selectProducts(req.query);
 
         res.status(200).send(result.rows);
+    } catch (err) {
+
+        res.status(500).send(err.message);
+    }
+}
+
+export async function getProduct(req, res) {
+    const { id } = req.params;
+
+    try {
+        const result = await selectProduct(id);
+        if (result.rowCount === 0) return res.status(404).send({ message: "Produto não encontrado!" });
+
+        res.status(200).send(result.rows[0]);
     } catch (err) {
 
         res.status(500).send(err.message);
