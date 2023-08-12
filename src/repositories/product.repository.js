@@ -10,7 +10,7 @@ export function insertProduct(product) {
 export function selectProducts(query) {
     const { category, description, name, minPrice, maxPrice, orderMaxPrice, orderMinPrice } = query;
 
-    let queryBase = `SELECT id, name, description, "currentPrice", category, "photoUrl" FROM product WHERE 1=1 `
+    let queryBase = `SELECT id, name, description, "currentPrice", category, "photoUrl" FROM product WHERE "isAvailable"=true `
     let queryComplement = ``;
     const values = [];
 
@@ -54,9 +54,9 @@ export function selectProduct(id) {
 
 export function selectProductsBySellerId(sellerId) {
     return db.query(`SELECT u.name AS "sellerName", JSON_AGG(p.*) AS "productsList"
-        FROM product p JOIN "user" u ON u.id=p."sellerId"
-        WHERE u.id=$1
-        GROUP BY u.id;`,
+    FROM product p RIGHT JOIN "user" u ON u.id=p."sellerId"
+    WHERE u.id=$1
+    GROUP BY u.id;`,
         [sellerId]);
 }
 

@@ -16,7 +16,7 @@ export async function createProduct(req, res) {
 }
 
 export async function getProducts(req, res) {
-    // pagina 1: (p - 1)x10 // pagina n + 1: (p - 1)x10 - 1
+
     try {
         const result = await selectProducts(req.query/*, 0*/);
 
@@ -47,7 +47,7 @@ export async function getMyProducts(req, res) {
     try {
         const result = await selectProductsBySellerId(userId);
 
-        res.status(200).send(result.rows);
+        res.status(200).send(result.rows[0]);
     } catch (err) {
 
         res.status(500).send(err.message);
