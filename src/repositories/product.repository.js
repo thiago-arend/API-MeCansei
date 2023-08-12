@@ -7,7 +7,7 @@ export function insertProduct(product) {
         [name, description, currentPrice, category, photoUrl, sellerId]);
 }
 
-export function selectProducts(query/*, offset*/) {
+export function selectProducts(query) {
     const { category, description, name, minPrice, maxPrice, orderMaxPrice, orderMinPrice } = query;
 
     let queryBase = `SELECT id, name, description, "currentPrice", category, "photoUrl" FROM product WHERE 1=1 `
@@ -42,9 +42,6 @@ export function selectProducts(query/*, offset*/) {
         queryComplement += ` ORDER BY "currentPrice"`;
     }
 
-    /*values.push(offset);
-    queryComplement += `OFFSET $${values.length} LIMIT 10;`;*/
-
     return db.query(queryBase + queryComplement, values);
 }
 
@@ -56,7 +53,10 @@ export function selectProduct(id) {
 }
 
 export function selectProductsBySellerId(sellerId) {
-    return db.query(`SELECT id, name, description, "currentPrice", category, "photoUrl", "isAvailable" FROM product WHERE "sellerId"=$1`,
+    return db.query(`SELECT u.name AS "sellerName", JSON_AGG(p.*) AS "productsList"
+        FROM product p JOIN "user" u ON u.id=p."sellerId"
+        WHERE u.id=$1
+        GROUP BY u.id;`,
         [sellerId]);
 }
 
