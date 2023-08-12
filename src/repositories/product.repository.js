@@ -47,7 +47,7 @@ export function selectProducts(query) {
 
 export function selectProduct(id) {
     return db.query(`SELECT p.id, p.name, p.description, p."currentPrice", p.category,
-        p."photoUrl", u.name AS "sellerName", u.phone AS "sellerPhone"
+        p."photoUrl", p."sellerId", u.name AS "sellerName", u.phone AS "sellerPhone"
         FROM product p JOIN "user" u ON u.id=p."sellerId"
         WHERE p.id=$1;`, [id]);
 }
