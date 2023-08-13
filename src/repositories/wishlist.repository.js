@@ -1,7 +1,7 @@
 import { db } from "../database/database.connection.js";
 
 export function insertWishlist(userId) {
-    return db.query(`INSERT INTO wishlist ("userId") VALUES ($1) RETURNING id;`, [userId]);
+    return db.query(`INSERT INTO wishlist ("userId") VALUES ($1) RETURNING *;`, [userId]);
 }
 
 export function getWishlistByUserId(userId) {

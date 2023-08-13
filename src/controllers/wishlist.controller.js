@@ -21,9 +21,11 @@ export async function putIntoWishlist(req, res) {
     const { id } = req.params;
 
     try {
-        const wishlistResult = await getWishlistByUserId(userId);
-        if (wishlistResult.rowCount === 0) return res.status(404).
-            send({ message: "A wishlist não pôde ser encontrada!" });
+        let wishlistResult = await getWishlistByUserId(userId);
+        if (wishlistResult.rowCount === 0) {
+            
+            wishlistResult = await insertWishlist(userId); // cria wishlist
+        }
 
         const productResult = await selectProduct(id);
         if (productResult.rowCount === 0) return res.status(404).send({ message: "O produto não pôde ser adicionado na wishlist porque ele não existe!" });
