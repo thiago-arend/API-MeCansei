@@ -1,5 +1,5 @@
 import { selectProduct, selectProductsBySellerId } from "../repositories/product.repository.js";
-import { getWishlistByUserId, insertProductIntoWishlist, insertWishlist } from "../repositories/wishlist.repository.js";
+import { getWishlistByUserId, insertProductIntoWishlist, insertWishlist, listProductsFromWishlist, removeProductFromWishlist } from "../repositories/wishlist.repository.js";
 
 export async function createWishlist(req, res) {
     const { userId } = res.locals.session;
@@ -23,7 +23,7 @@ export async function putIntoWishlist(req, res) {
     try {
         const wishlistResult = await getWishlistByUserId(userId);
         if (wishlistResult.rowCount === 0) return res.status(404).
-                send({ message: "A wishlist não pôde ser encontrada!" });
+            send({ message: "A wishlist não pôde ser encontrada!" });
 
         const productResult = await selectProduct(id);
         if (productResult.rowCount === 0) return res.status(404).send({ message: "O produto não pôde ser adicionado na wishlist porque ele não existe!" });
@@ -39,4 +39,39 @@ export async function putIntoWishlist(req, res) {
 
         res.status(500).send(err.message);
     }
+}
+
+export async function removeFromWishlist(req, res) {
+    const { userId } = res.locals.session;
+    const { id } = req.params;
+
+    console.log('entrou');
+
+    try {
+        const wishlistResult = await getWishlistByUserId(userId);
+        if (wishlistResult.rowCount === 0) return res.status(404).
+            send({ message: "A wishlist não pôde ser encontrada!" });
+
+        const removeResult = await removeProductFromWishlist(wishlistResult.rows[0].id, id);
+        if (removeResult.rowCount === 0) return res.status(401).
+            send({ message: "O produto não pôde ser removido porque não foi adicionado à wishlist!"})
+
+        res.sendStatus(204);
+    } catch (err) {
+
+        res.status(500).send(err.message);
+    }
+}
+
+export async function listWishlistContent(req, res) {
+    const { userId } = res.locals.session;
+
+    try {
+        const result = await listProductsFromWishlist(userId);
+
+        res.send(result.rows);
+    } catch (err) {
+
+        res.status(500).send(err.message);
+    } 
 }
