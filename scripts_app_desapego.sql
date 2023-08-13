@@ -50,13 +50,14 @@ CREATE TABLE comment (
 
 CREATE TABLE wishlist (
 	id SERIAL PRIMARY KEY,
-	"userId" INTEGER REFERENCES "user"(id) NOT NULL,
+	"userId" INTEGER REFERENCES "user"(id) UNIQUE NOT NULL,
 	"createdAt" TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
 CREATE TABLE "wishlistHasProduct" (
-	id SERIAL PRIMARY KEY,
+	id SERIAL,
 	"productId" INTEGER REFERENCES product(id) NOT NULL,
 	"wishlistId" INTEGER REFERENCES wishlist(id) NOT NULL,
-	"createdAt" TIMESTAMP DEFAULT NOW() NOT NULL
+	"createdAt" TIMESTAMP DEFAULT NOW() NOT NULL,
+	PRIMARY KEY ("wishlistId", "productId")
 );
