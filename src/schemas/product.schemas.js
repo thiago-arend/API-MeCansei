@@ -5,5 +5,5 @@ export const productSchema = joi.object({
     description: joi.string().allow(""),
     currentPrice: joi.number().integer().required(),
     category: joi.string().valid("DVD", "CD", "livro").required(),
-    photoUrl: joi.string().uri().required()
+    photoUrl: joi.any().allow("")
 });
