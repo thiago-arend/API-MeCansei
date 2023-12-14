@@ -30,7 +30,7 @@ export async function putIntoWishlist(req, res) {
         let wishlistResult = await getWishlistByUserId(userId);
         if (wishlistResult.rowCount === 0) {
 
-            wishlistResult = await insertWishlist(userId); // cria wishlist
+            wishlistResult = await insertWishlist(userId);
         }
 
         const productResult = await selectProduct(id);
