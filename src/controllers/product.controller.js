@@ -1,4 +1,12 @@
-import { deleteProduct, insertProduct, selectProduct, selectProducts, selectProductsBySellerId, updateProduct, updateProductAvailability } from "../repositories/product.repository.js";
+import {
+    deleteProduct,
+    insertProduct,
+    selectProduct,
+    selectProducts,
+    selectProductsBySellerId,
+    updateProduct,
+    updateProductAvailability
+} from "../repositories/product.repository.js";
 
 export async function createProduct(req, res) {
     const { userId } = res.locals.session;
@@ -18,7 +26,7 @@ export async function createProduct(req, res) {
 export async function getProducts(req, res) {
 
     try {
-        const result = await selectProducts(req.query/*, 0*/);
+        const result = await selectProducts(req.query);
 
         res.status(200).send(result.rows);
     } catch (err) {

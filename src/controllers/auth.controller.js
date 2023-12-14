@@ -20,7 +20,7 @@ export async function signup(req, res) {
 }
 
 export async function signin(req, res) {
-    const { email, password } = req.body; // senhas já validadas pelo schema
+    const { email, password } = req.body;
 
     try {
         
