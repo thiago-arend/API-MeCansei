@@ -1,4 +1,4 @@
-import { selectProduct, selectProductsBySellerId } from "../repositories/product.repository.js";
+import { selectProduct } from "../repositories/product.repository.js";
 import { getWishlistByUserId, insertProductIntoWishlist, insertWishlist, listProductsFromWishlist, removeProductFromWishlist } from "../repositories/wishlist.repository.js";
 
 export async function createWishlist(req, res) {
@@ -29,7 +29,7 @@ export async function putIntoWishlist(req, res) {
 
         const productResult = await selectProduct(id);
         if (productResult.rowCount === 0) return res.status(404).send({ message: "O produto não pôde ser adicionado na wishlist porque ele não existe!" });
-        console.log(productResult.rows[0]);
+        
         if (productResult.rows[0].sellerId === userId) return res.status(401).send({ message: "O produto não pôde ser adicionado na wishlist porque ele foi inserido por você!" });
 
         await insertProductIntoWishlist(wishlistResult.rows[0].id, id);
@@ -46,8 +46,6 @@ export async function putIntoWishlist(req, res) {
 export async function removeFromWishlist(req, res) {
     const { userId } = res.locals.session;
     const { id } = req.params;
-
-    console.log('entrou');
 
     try {
         const wishlistResult = await getWishlistByUserId(userId);
