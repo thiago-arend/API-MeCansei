@@ -52,6 +52,14 @@ export function selectProduct(id) {
         WHERE p.id=$1;`, [id]);
 }
 
+export function selectProductByIdAndUserId(id, userId) {
+    return db.query(`SELECT * FROM product p WHERE p.id=$1 AND p."sellerId"=$2;`, [id, userId]);
+}
+
+export function selectProductByName(name) {
+    return db.query('SELECT * FROM product WHERE name=$1', [name]);
+}
+
 export function selectProductsBySellerId(sellerId) {
     return db.query(`SELECT u.name AS "sellerName", JSON_AGG(p.*) AS "productsList"
     FROM product p RIGHT JOIN "user" u ON u.id=p."sellerId"

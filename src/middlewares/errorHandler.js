@@ -9,6 +9,18 @@ export default function errorHandlingMiddleware(error, req, res, next) {
     return res.status(httpStatus.CONFLICT).send(error.message)
   }
 
+  if (error.name === "ProductConflictError") {
+    return res.status(httpStatus.CONFLICT).send(error.message)
+  }
+
+  if (error.name === "ProductNotFoundError") {
+    return res.status(httpStatus.NOT_FOUND).send(error.message)
+  }
+
+  if (error.name === "ProductDeletionPermissionError" || error.name === "ProductUpdatePermissionError") {
+    return res.status(httpStatus.UNAUTHORIZED).send(error.message)
+  }
+
   console.log(error);
   return res.status(httpStatus.INTERNAL_SERVER_ERROR);
 }
