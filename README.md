@@ -55,7 +55,7 @@ Todas as rotas podem ser testadas usando um API Client da sua preferência atrav
 
 <details>
 <summary>
-<b><font color="#D9730D">POST</font></b><font> /participants
+<b><font color="#D9730D">POST</font></b><font> /auth/signup
 </summary>
 <br>
 
@@ -88,7 +88,7 @@ Todas as rotas podem ser testadas usando um API Client da sua preferência atrav
 
 <details>
 <summary> 
-<b><font color="#D9730D">POST</font></b><font> /games 
+<b><font color="#D9730D">POST</font></b><font> /auth/signin 
 </summary>
 <br>
 
@@ -125,7 +125,7 @@ Todas as rotas podem ser testadas usando um API Client da sua preferência atrav
 
 <details>
 <summary> 
-<b><font color="#D9730D">POST</font></b><font> /bets 
+<b><font color="#D9730D">POST</font></b><font> /auth/signout 
 </summary>
 <br>
 
@@ -170,7 +170,7 @@ Todas as rotas podem ser testadas usando um API Client da sua preferência atrav
 
 <details>
 <summary> 
-<b><font color="#D9730D">POST</font></b><font> /games/:id/finish 
+<b><font color="#D9730D">POST</font></b><font> /products/:id/wishlist 
 </summary>
 <br>
 
@@ -208,7 +208,45 @@ Todas as rotas podem ser testadas usando um API Client da sua preferência atrav
 
 <details>
 <summary> 
-<b><font color="#448375">GET</font></b><font> /participants 
+<b><font color="red">DELETE</font></b><font> /products/:id/wishlist 
+</summary>
+<br>
+
+* Finishes a game and consequently update all bets linked to it, calculating the amount won in each one and updating the balance of the winning participants.
+#
+* Input: game final score
+
+```typescript
+{
+	homeTeamScore: number;
+	awayTeamScore: number;
+}
+```
+#
+* Output: updated game object
+
+```typescript
+{
+	id: number;
+	createdAt: string;
+	updatedAt: string;
+	homeTeamName: string;
+	awayTeamName: string;
+	homeTeamScore: number;
+	awayTeamScore: number;
+	isFinished: boolean; // will be set to true
+}
+```
+#
+* Rules
+  * Game's id must be valid (integer equal or greater to 1), otherwise you'll get <font color="red">400 (Bad Request)</font>.
+  * Game's id must exist, otherwise you'll get <font color="red">404 (Not Found)</font>.
+  * You must not finish a game that has been already finished, otherwise you'll get <font color="red">403 (Forbidden)</font>.
+</details>
+
+<details>
+<summary> 
+<b><font color="#448375">GET</font></b><font> /wishlist/me 
 </summary>
 <br>
 
@@ -228,72 +266,4 @@ Todas as rotas podem ser testadas usando um API Client da sua preferência atrav
 	{...}
 ]
 ```
-</details>
-
-<details>
-<summary> 
-<b><font color="#448375">GET</font></b><font> /games 
-</summary>
-<br>
-
-* Returns all registered games.
-#
-* Output: array containing all games
-
-```typescript
-[
-	{
-		id: number;
-		createdAt: string;
-		updatedAt: string;
-		homeTeamName: string;
-		awayTeamName: string;
-		homeTeamScore: number;
-		awayTeamScore: number;
-		isFinished: boolean;
-	},
-	{...}
-]
-```
-</details>
-
-<details>
-<summary> 
-<b><font color="#448375">GET</font></b><font> /games/:id 
-</summary>
-<br>
-
-* Returns the data for a game along with the bets linked to it.
-#
-* Output: object representing a game and an array containing all bet linked to it
-
-```typescript
-{
-	id: number;
-	createdAt: string;
-	updatedAt: string;
-	homeTeamName: string;
-	awayTeamName: string;
-	homeTeamScore: number;
-	awayTeamScore: number;
-	isFinished: boolean;
-	bets: {
-		id: number;
-		createdAt: string;
-		updatedAt: string;
-		homeTeamScore: number;
-		awayTeamScore: number;
-		amountBet: number; // represented in cents (e.g. $10.00 = 1000)
-		gameId: number; 
-		participantId: number;
-		status: string; // may be PENDING, WON or LOST
-		amountWon: number || null; // null while bet is PENDING; number if bet has WON or LOST status, with amount won represented in cents
-	}[]
-}
-```
-
-#
-* Rules
-  * Game's id must be valid (integer equal or greater to 1), otherwise you'll get <font color="red">400 (Bad Request)</font>.
-  * Game's id must exist, otherwise you'll get <font color="red">404 (Not Found)</font>.
 </details>
