@@ -1,6 +1,6 @@
 import { productDoesNotBelongToWishlist } from "../errors/productDoesNotBelongToWishlistError.js";
 import { productNotFound } from "../errors/productNotFoundError.js";
-import { wishlistAlreadyExists } from "../errors/wishlistAlreadyExistsErros.js";
+import { wishlistAlreadyExists } from "../errors/wishlistAlreadyExistsError.js";
 import { wishlistConflict } from "../errors/wishlistConflictError.js";
 import { wishlistNotFound } from "../errors/wishlistNotFoundError.js";
 import { selectProduct } from "../repositories/product.repository.js";
