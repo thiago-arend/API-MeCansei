@@ -13,6 +13,11 @@ export function insertProductIntoWishlist(wishlistId, prodId) {
         ("productId", "wishlistId") VALUES ($1, $2);`, [prodId, wishlistId]);
 }
 
+export function selectProductFromWishlist(wishlistId, prodId) {
+    return db.query(`SELECT * FROM "wishlistHasProduct" WHERE 
+        "productId"=$1 AND "wishlistId"=$2;`, [prodId, wishlistId]);
+}
+
 export function removeProductFromWishlist(wishlistId, prodId) {
     return db.query(`DELETE FROM "wishlistHasProduct" WHERE 
         "productId"=$1 AND "wishlistId"=$2;`, [prodId, wishlistId]);
